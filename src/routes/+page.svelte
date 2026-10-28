@@ -1,26 +1,27 @@
 <script>
-    import { onMount } from 'svelte';
+	let alpha = $state(null);
+	let beta = $state(null);
+	let gamma = $state(null);
 
-    let alpha = $state(null);
-    let beta = $state(null);
-    let gamma = $state(null);
+	async function start() {
+		// Nur iPhone braucht die Erlaubnis
+		if (typeof DeviceOrientationEvent?.requestPermission === 'function') {
+			const result = await DeviceOrientationEvent.requestPermission();
+			if (result !== 'granted') return;
+		}
 
-    onMount(() => {
-        if (window.DeviceOrientationEvent) {
-            window.addEventListener('deviceorientation', (event) => {
-                alpha = event.alpha;
-                beta = event.beta;
-                gamma = event.gamma;
-            });
-        } else {
-            console.log('Device orientation not supported');
-        }
-    });
+		window.addEventListener('deviceorientation', (e) => {
+			alpha = e.alpha;
+			beta = e.beta;
+			gamma = e.gamma;
+		});
+	}
 </script>
 
 <h1>Device Orientation</h1>
 
+<button onclick={start}>Start</button>
 
 <p>Alpha: {alpha}</p>
-<p>Beta:{beta}</p>
+<p>Beta: {beta}</p>
 <p>Gamma: {gamma}</p>
